@@ -36,7 +36,6 @@ func LoadConfig() *Config {
 		DbName:     dbName,
 		DbPort:     dbPort,
 	}
-
 }
 
 func MySQL(c *Config) (*sql.DB, error) {

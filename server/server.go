@@ -5,7 +5,6 @@ import (
 	"REST-API-BookCatalog-Gin/repository"
 	"REST-API-BookCatalog-Gin/usecase"
 	"database/sql"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -28,6 +27,7 @@ func NewServer(db *sql.DB, validator *validator.Validate) *ApiServer {
 }
 
 func (server *ApiServer) ListenAndServer(port string) {
+	server.Router.Use(gin.Logger())
 	server.registerRouter()
 
 	http.ListenAndServe(":"+port, server.Router)
@@ -38,5 +38,5 @@ func (server *ApiServer) registerRouter() {
 	uCase := usecase.NewBookUsecase(repo)
 	bookHandler := handler.NewBookHandler(uCase, server.validator)
 
-	log.Println(bookHandler)
+	server.Router.GET("api/books", bookHandler.GetList)
 }
