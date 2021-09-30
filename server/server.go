@@ -39,4 +39,5 @@ func (server *ApiServer) registerRouter() {
 	bookHandler := handler.NewBookHandler(uCase, server.validator)
 
 	server.Router.GET("api/books", bookHandler.GetList)
+	server.Router.GET("api/books/:bookID", bookHandler.GetByID)
 }

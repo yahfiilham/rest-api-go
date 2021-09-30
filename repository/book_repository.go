@@ -7,6 +7,7 @@ import (
 
 type BookRepository interface {
 	GetList() ([]entity.Book, error)
+	GetByID(id int) (*entity.Book, error)
 }
 
 type bookRepository struct {
@@ -35,4 +36,17 @@ func (b *bookRepository) GetList() ([]entity.Book, error) {
 	}
 
 	return books, nil
+}
+
+func (b *bookRepository) GetByID(id int) (*entity.Book, error) {
+	sqlStatement := "SELECT * FROM tbl_books WHERE book_id = ?"
+	row := b.DB.QueryRow(sqlStatement, id)
+	var book entity.Book
+	err := row.Scan(&book.Id, &book.Name, &book.Creator)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &book, nil
 }

@@ -3,11 +3,13 @@ package usecase
 import (
 	"REST-API-BookCatalog-Gin/repository"
 	"REST-API-BookCatalog-Gin/transport"
+	"database/sql"
 	"net/http"
 )
 
 type BookUsecase interface {
 	GetList() (*transport.GetList, *transport.ResponseError)
+	GetByID(id int) (*transport.GetBookResponse, *transport.ResponseError)
 }
 
 type bookUsecase struct {
@@ -34,5 +36,23 @@ func (b *bookUsecase) GetList() (*transport.GetList, *transport.ResponseError) {
 	return &transport.GetList{
 		Count:    len(result),
 		ListBook: result,
+	}, nil
+}
+
+func (b *bookUsecase) GetByID(id int) (*transport.GetBookResponse, *transport.ResponseError) {
+	result, err := b.repository.GetByID(id)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			responseError := &transport.ResponseError{
+				Message: "Data not found, please check your request.",
+				Status:  http.StatusNotFound,
+			}
+			return nil, responseError
+		}
+	}
+
+	return &transport.GetBookResponse{
+		Data: *result,
 	}, nil
 }
