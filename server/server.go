@@ -40,4 +40,5 @@ func (server *ApiServer) registerRouter() {
 
 	server.Router.GET("api/books", bookHandler.GetList)
 	server.Router.GET("api/books/:bookID", bookHandler.GetByID)
+	server.Router.POST("api/insertbook", bookHandler.AddBook)
 }

@@ -8,6 +8,7 @@ import (
 type BookRepository interface {
 	GetList() ([]entity.Book, error)
 	GetByID(id int) (*entity.Book, error)
+	AddBook(payload entity.Book) error
 }
 
 type bookRepository struct {
@@ -49,4 +50,14 @@ func (b *bookRepository) GetByID(id int) (*entity.Book, error) {
 	}
 
 	return &book, nil
+}
+
+func (b *bookRepository) AddBook(payload entity.Book) error {
+	_, err := b.DB.Exec("INSERT INTO tbl_books (book_name, book_creator) VALUES (?, ?)", payload.Name, payload.Creator)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
