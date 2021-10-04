@@ -3,7 +3,6 @@ package handler
 import (
 	"REST-API-BookCatalog-Gin/transport"
 	"REST-API-BookCatalog-Gin/usecase"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -38,8 +37,6 @@ func (b *bookHandler) GetList(gc *gin.Context) {
 func (b *bookHandler) GetByID(gc *gin.Context) {
 	gc.Header("Content-Type", "application/json")
 	id, _ := strconv.Atoi(gc.Param("bookID"))
-
-	log.Println(id)
 
 	result, err := b.usecase.GetByID(id)
 	if err != nil {
