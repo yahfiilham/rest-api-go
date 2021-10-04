@@ -37,7 +37,6 @@ func (b *bookHandler) GetList(gc *gin.Context) {
 
 func (b *bookHandler) GetByID(gc *gin.Context) {
 	gc.Header("Content-Type", "application/json")
-	log.Println("ididididid")
 	id, _ := strconv.Atoi(gc.Param("bookID"))
 
 	log.Println(id)
@@ -53,8 +52,8 @@ func (b *bookHandler) GetByID(gc *gin.Context) {
 
 func (b *bookHandler) AddBook(gc *gin.Context) {
 	gc.Header("Content-Type", "application/json")
-	var requestBook transport.InsertBook
 
+	var requestBook transport.InsertBook
 	if err := gc.ShouldBindJSON(&requestBook); err != nil {
 		gc.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -62,7 +61,6 @@ func (b *bookHandler) AddBook(gc *gin.Context) {
 
 	// checking validation
 	errorValidation := b.validator.Struct(requestBook)
-
 	if errorValidation != nil {
 		gc.JSON(http.StatusBadRequest, transport.ResponseError{
 			Message: errorValidation.Error(),
@@ -72,7 +70,38 @@ func (b *bookHandler) AddBook(gc *gin.Context) {
 	}
 
 	result, responseError := b.usecase.AddBook(requestBook)
+	if responseError != nil {
+		gc.JSON(responseError.Status, responseError)
+		return
+	}
 
+	gc.JSON(http.StatusOK, result)
+}
+
+func (b *bookHandler) UpdateBook(gc *gin.Context) {
+	gc.Header("Content-Type", "application/json")
+	id, _ := strconv.Atoi(gc.Param("bookID"))
+
+	var requestBook transport.UpdateBook
+	if err := gc.ShouldBindJSON(&requestBook); err != nil {
+		gc.JSON(http.StatusBadRequest, transport.ResponseError{
+			Message: "error while decode request body",
+			Status:  http.StatusBadRequest,
+		})
+		return
+	}
+
+	// checking validation
+	errorValidation := b.validator.Struct(requestBook)
+	if errorValidation != nil {
+		gc.JSON(http.StatusBadRequest, transport.ResponseError{
+			Message: errorValidation.Error(),
+			Status:  http.StatusBadRequest,
+		})
+		return
+	}
+
+	result, responseError := b.usecase.UpdateBook(id, requestBook)
 	if responseError != nil {
 		gc.JSON(responseError.Status, responseError)
 		return
