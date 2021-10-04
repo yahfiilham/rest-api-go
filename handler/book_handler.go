@@ -52,7 +52,10 @@ func (b *bookHandler) AddBook(gc *gin.Context) {
 
 	var requestBook transport.InsertBook
 	if err := gc.ShouldBindJSON(&requestBook); err != nil {
-		gc.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		gc.JSON(http.StatusBadRequest, transport.ResponseError{
+			Message: "error while decode request body",
+			Status:  http.StatusBadRequest,
+		})
 		return
 	}
 
