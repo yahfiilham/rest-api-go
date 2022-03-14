@@ -16,5 +16,6 @@ func main() {
 	}
 
 	server := server.NewServer(dbInit, validation)
+
 	server.ListenAndServer("8080")
 }

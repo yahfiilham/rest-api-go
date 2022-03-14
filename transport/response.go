@@ -21,3 +21,13 @@ type ResponseError struct {
 	Message string
 	Status  int
 }
+
+// Get Users
+type GetListUser struct {
+	Count int `json:"count"`
+	ListUser []entity.User `json:"listUser"`
+}
+
+type GetUserResponse struct {
+	Data entity.User `json:"data"`
+}

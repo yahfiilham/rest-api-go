@@ -38,8 +38,18 @@ func (server *ApiServer) registerRouter() {
 	uCase := usecase.NewBookUsecase(repo)
 	bookHandler := handler.NewBookHandler(uCase, server.validator)
 
+	userRepo := repository.NewUserRepository(server.DB)
+	userCase := usecase.NewUserUsecase(userRepo)
+	userHandler := handler.NewUserHandler(userCase, server.validator)
+
+
 	server.Router.GET("api/books", bookHandler.GetList)
 	server.Router.GET("api/books/:bookID", bookHandler.GetByID)
 	server.Router.POST("api/insertbook", bookHandler.AddBook)
 	server.Router.PATCH("api/updatebook/:bookID", bookHandler.UpdateBook)
+	
+	server.Router.GET("api/users", userHandler.GetListUser)
+	server.Router.GET("api/users/:userID", userHandler.GetUserByID)
+	server.Router.POST("api/users", userHandler.AddUser)
+	server.Router.PATCH("api/users/:userID", userHandler.UpdateUser)
 }
